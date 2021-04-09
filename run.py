@@ -50,7 +50,7 @@ def run(general_params,
     else:
         episode_vid_queue = episode_renderer = None
 
-    if a2c_params['env_id'] in ['MovingDot-v0', 'MovingDotNoFrameskip-v0']:
+    if a2c_params['env_id'] in ['MovingDot-v0', 'MovingDotDiscreteNoFrameskip-v0']:
         reward_predictor_network = net_moving_dot_features
     elif a2c_params['env_id'] in ['PongNoFrameskip-v4', 'EnduroNoFrameskip-v4']:
         reward_predictor_network = net_cnn
@@ -242,7 +242,7 @@ def start_policy_training(cluster_dict, make_reward_predictor, gen_segments,
                           start_policy_training_pipe, seg_pipe,
                           episode_vid_queue, log_dir, a2c_params):
     env_id = a2c_params['env_id']
-    if env_id in ['MovingDotNoFrameskip-v0', 'MovingDot-v0']:
+    if env_id in ['MovingDotDiscreteNoFrameskip-v0', 'MovingDot-v0']:
         policy_fn = MlpPolicy
     elif env_id in ['PongNoFrameskip-v4', 'EnduroNoFrameskip-v4']:
         policy_fn = CnnPolicy

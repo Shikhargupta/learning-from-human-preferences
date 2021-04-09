@@ -226,7 +226,7 @@ def batch_iter(data, batch_size, shuffle=False):
 
 
 def make_env(env_id, seed=0):
-    if env_id in ['MovingDot-v0', 'MovingDotNoFrameskip-v0']:
+    if env_id in ['MovingDot-v0', 'MovingDotDiscreteNoFrameskip-v0']:
         import gym_moving_dot
     env = gym.make(env_id)
     env.seed(seed)
