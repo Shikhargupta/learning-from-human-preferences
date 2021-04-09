@@ -62,7 +62,7 @@ All training is done using [`run.py`](run.py). Basic usage is:
 `$ python3 run.py <mode> <environment>`
 
 Supported environments are
-[`MovingDotNoFrameskip-v0`](https://github.com/mrahtz/gym-moving-dot),
+[`MovingDotDiscreteNoFrameskip-v0`](https://github.com/mrahtz/gym-moving-dot),
 `PongNoFrameskip-v4`, and `EnduroNoFrameskip-v4`.
 
 ### Training with original rewards
@@ -78,9 +78,9 @@ For example, to train Pong:
 
 Use the `train_policy_with_preferences` mode.
 
-For example, to train `MovingDotNoFrameskip-v0` using *synthetic* preferences:
+For example, to train `MovingDotDiscreteNoFrameskip-v0` using *synthetic* preferences:
 
-`$ python3 run.py train_policy_with_preferences MovingDotNoFrameskip-v0 --synthetic_prefs --ent_coef 0.02 --million_timesteps 0.15`
+`$ python3 run.py train_policy_with_preferences MovingDotDiscreteNoFrameskip-v0 --synthetic_prefs --ent_coef 0.02 --million_timesteps 0.15`
 
 On a machine with a GPU, this takes about an hour. TensorBoard logs (created in
 a new directory in `runs/` automatically) should look something like:
@@ -132,10 +132,10 @@ their results for later use:
 * Load a pretrained reward predictor using the `--load_reward_predictor_ckpt`
   argument when running in `train_policy_with_preferences` mode.
 
-For example, to gather synthetic preferences for `MovingDotNoFrameskip-v0`,
+For example, to gather synthetic preferences for `MovingDotDiscreteNoFrameskip-v0`,
 saving to run directory `moving_dot-initial_prefs`:
 
-`$ python run.py gather_initial_prefs MovingDotNoFrameskip-v0 --synthetic_prefs --run_name moving_dot-initial_prefs`
+`$ python run.py gather_initial_prefs MovingDotDiscreteNoFrameskip-v0 --synthetic_prefs --run_name moving_dot-initial_prefs`
 
 ### Running on FloydHub
 
@@ -161,7 +161,7 @@ For example:
 
 * To run the agent trained for the moving dot environment:
 
-`$ python3 run_checkpoint.py MovingDotNoFrameskip-v0 runs/moving-dot_45cb953/policy_checkpoints`
+`$ python3 run_checkpoint.py MovingDotDiscreteNoFrameskip-v0 runs/moving-dot_45cb953/policy_checkpoints`
 
 * To run the agent trained for Pong:
 
