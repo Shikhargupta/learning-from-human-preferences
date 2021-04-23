@@ -155,7 +155,6 @@ class RewardPredictorEnsemble:
         n_steps = obs.shape[0]
 
         # Get unnormalized rewards
-
         ensemble_rs = self.raw_rewards(obs)
         logging.debug("Unnormalized rewards:\n%s", ensemble_rs)
 

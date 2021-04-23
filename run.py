@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+'''
+python3 run.py train_policy_with_preferences MovingDotDiscreteNoFrameskip-v0 --n_envs 16 --render_episodes --load_prefs_dir runs/moving-dot_45cb953 --n_initial_epochs 10
+'''
+
+
 import logging
 import os
 from os import path as osp
@@ -52,6 +57,7 @@ def run(general_params,
 
     if a2c_params['env_id'] in ['MovingDot-v0', 'MovingDotDiscreteNoFrameskip-v0']:
         reward_predictor_network = net_moving_dot_features
+        # reward_predictor_network = gpro_moving_dot
     elif a2c_params['env_id'] in ['PongNoFrameskip-v4', 'EnduroNoFrameskip-v4']:
         reward_predictor_network = net_cnn
     else:
@@ -366,7 +372,7 @@ def start_reward_predictor_training(cluster_dict,
             return
 
         start_policy_training_pipe.put(True)
-        
+
         i = 0
         while True:
             pref_db_train, pref_db_val = pref_buffer.get_dbs()
