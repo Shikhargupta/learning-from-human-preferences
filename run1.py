@@ -1,3 +1,7 @@
+
+'''
+python3 run1.py train_policy_with_preferences MovingDotDiscreteNoFrameskip-v0 --n_envs 16 --render_episodes --load_prefs_dir runs/moving-dot_45cb953'''
+
 import logging
 import os
 from os import path as osp
@@ -115,7 +119,9 @@ def start_policy_training(cluster_dict, gen_segments,
     os.makedirs(ckpt_dir)
 
     def f():
+        print("training!!!!!!!!!!!!!!!")
         reward_predictor = make_train_reward_predictor()
+        print("Trained rp!!!!!!!!!")
         misc_logs_dir = osp.join(log_dir, 'a2c_misc')
         easy_tf_log.set_dir(misc_logs_dir)
         learn(
@@ -132,13 +138,15 @@ def start_policy_training(cluster_dict, gen_segments,
     proc = Process(target=f, daemon=True)
     proc.start()
     return env, proc
-cluster_dict = create_cluster_dict(['a2c'])
+
 env, a2c_proc = start_policy_training(
-    cluster_dict=cluster_dict,
+    cluster_dict=None,
     gen_segments=False,
     start_policy_training_pipe=start_policy_training_flag,
     seg_pipe=seg_pipe,
     episode_vid_queue=episode_vid_queue,
     log_dir=general_params['log_dir'],
     a2c_params=a2c_params)
+start_policy_training_flag.put(True)
 a2c_proc.join()
+env.close()

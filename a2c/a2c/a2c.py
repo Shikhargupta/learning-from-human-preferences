@@ -327,7 +327,7 @@ def learn(policy,
 
     tf.reset_default_graph()
     set_global_seeds(seed)
-
+    print("debugggggggggggg1")
     nenvs = env.num_envs
     ob_space = env.observation_space
     ac_space = env.action_space
@@ -348,7 +348,7 @@ def learn(policy,
             lr_scheduler=lr_scheduler,
             alpha=alpha,
             epsilon=epsilon)
-
+    print("debuggggggg2")
     with open(osp.join(ckpt_save_dir, 'make_model.pkl'), 'wb') as fh:
         fh.write(cloudpickle.dumps(make_model))
 
@@ -386,14 +386,14 @@ def learn(policy,
 
     # Before we're told to start training the policy itself,
     # just generate segments for the reward predictor to be trained with
-    while True:
-        runner.run()
-        try:
-            start_policy_training_pipe.get(block=False)
-        except queue.Empty:
-            continue
-        else:
-            break
+    # while True:
+    #     runner.run()
+    #     try:
+    #         start_policy_training_pipe.get(block=False)
+    #     except queue.Empty:
+    #         continue
+    #     else:
+    #         break
 
     print("Starting policy training")
 

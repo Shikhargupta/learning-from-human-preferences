@@ -12,7 +12,7 @@ from pref_db import PrefDB, PrefBuffer
 from tensorflow.keras import optimizers
 from utils import RunningStat, batch_iter
 
-tf.enable_eager_execution()
+# tf.enable_eager_execution()
 
 def get_dot_position(s):
     """
@@ -45,8 +45,8 @@ class gp_rp:
         self.latent_index_points = tf.Variable(self.init_, name='latent_index_points')
 
         self.gp = tfd.GaussianProcess(self.kernel,self.latent_index_points)
-        self.optimizer = optimizers.Adam()
-        self.epochs = 1
+        self.optimizer = tf.train.AdamOptimizer(0.001)
+        self.epochs = 2
 
     def reward(self,frames):
         s = np.array(frames[0])
@@ -98,25 +98,29 @@ class gp_rp:
             for _, batch in enumerate(batch_iter(pref_db_train.prefs,
                                                  batch_size=32,
                                                  shuffle=True)):
+                print("New Batch!!!!!!!!")
                 s1s = [pref_db_train.segments[k1] for k1, k2, pref, in batch]
                 s2s = [pref_db_train.segments[k2] for k1, k2, pref, in batch]
                 prefs = [pref for k1, k2, pref, in batch]
                 x1 = self.get_features(s1s)
                 x2 = self.get_features(s2s)
                 self.train_step(x1,x2,prefs)
+        print("Trained!!!!!!!!!!!!")
 
 
     def train_step(self,x1,x2,prefs):
-        with tf.GradientTape() as tape:
-            r1 = self.gp.prob(x1)
-            r2 = self.gp.prob(x2)
-            rs1 = tf.reduce_sum(r1, axis=1)
-            rs2 = tf.reduce_sum(r2, axis=1)
-            rs = tf.stack([rs1, rs2], axis=1)
-            loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=prefs,
-                                                           logits=rs)
-        grads = tape.gradient(loss, self.gp.trainable_variables)
-        self.optimizer.apply_gradients(zip(grads, self.gp.trainable_variables))
+        r1 = self.gp.prob(x1)
+        r2 = self.gp.prob(x2)
+        rs1 = tf.reduce_sum(r1, axis=1)
+        rs2 = tf.reduce_sum(r2, axis=1)
+        rs = tf.stack([rs1, rs2], axis=1)
+        _loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=prefs,
+                                                       logits=rs)
+        loss = tf.reduce_sum(_loss)
+        train_op = self.optimizer.minimize(loss)
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            _, loss_val = sess.run([train_op, loss])
 
 
 def net_moving_dot_features(s, batchnorm, dropout, training, reuse):
